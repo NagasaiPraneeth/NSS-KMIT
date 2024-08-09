@@ -7,7 +7,13 @@ const path = require('path');
 require('dotenv').config();
 const multer = require('multer');
 
-
+app.use(cors(
+    {
+        origin:["https://invoice-analyzer.vercel.app/"],
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+));
 
 const port = process.env.PORT;
 app.use(bodyParser.json({ limit: '100mb' }));
@@ -16,7 +22,7 @@ app.use(express.json({ limit: '100mb' }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors());
+
 
 app.use(express.static(path.join(__dirname, './build')));
 
