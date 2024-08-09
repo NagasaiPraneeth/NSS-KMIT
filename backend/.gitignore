@@ -24,7 +24,6 @@ yarn-error.log*
 Thumbs.db
 
 # Output directories
-build
 dist/
 out/
 
