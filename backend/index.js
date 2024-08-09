@@ -165,7 +165,6 @@ app.post('/analyze-invoice', uploadToMongo, async (req, res) => {
     });
 
     const result = await chatSession.sendMessage("Analyze the invoice image");
-    console.log(result.response.text())
     res.json({ analysis: result.response.text() });
   } catch (error) {
     console.error('Error:', error);
