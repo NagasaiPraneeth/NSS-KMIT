@@ -5,48 +5,44 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv').config();
-const multer = require('multer');
-
-app.use(cors(
-    {
-        origin:["https://invoice-analyzer.vercel.app/"],
-        methods: ["GET", "POST"],
-        credentials: true
-    }
-));
-
-const port = process.env.PORT;
-app.use(bodyParser.json({ limit: '100mb' }));
-
-app.use(express.json({ limit: '100mb' }));
-
-app.use(bodyParser.urlencoded({ extended: true }));
-
-
-
-app.use(express.static(path.join(__dirname, './build')));
-
-app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, './build', 'index.html'));
-});
-
-
-
-
-app.get('*', function (req, res) {
-    res.sendFile(path.resolve(__dirname, './build', 'index.html'));
-});
-
-
-const fs = require('fs').promises;
 const {
   GoogleGenerativeAI,
   HarmCategory,
   HarmBlockThreshold,
 } = require("@google/generative-ai");
 
-const upload = multer({ dest: 'uploads/' });
+// MongoDB connection
+mongoose.connect("mongodb+srv://Project:Florencemidhebaramvesam@project.tbx2krn.mongodb.net/Saanjh");
 
+// File schema
+const fileSchema = new mongoose.Schema({
+  data: Buffer,
+  contentType: String
+});
+
+const File = mongoose.model('File', fileSchema);
+
+// app.use(cors({
+//   origin: ["https://invoice-analyzer.vercel.app/"],
+//   methods: ["GET", "POST"],
+//   credentials: true
+// }));
+app.use(cors());
+
+const port = 5173;
+app.use(bodyParser.json({ limit: '100mb' }));
+app.use(express.json({ limit: '100mb' }));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.static(path.join(__dirname, './build')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './build', 'index.html'));
+});
+
+app.get('*', function (req, res) {
+  res.sendFile(path.resolve(__dirname, './build', 'index.html'));
+});
 
 const apiKey = "AIzaSyCqX6XEJ9k1mGC0Q_BP_WblLxSomZrwPPE";
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -113,23 +109,42 @@ const generationConfig = {
     },
   };
 
-async function fileToBase64(filePath) {
-  const fileBuffer = await fs.readFile(filePath);
-  return fileBuffer.toString('base64');
-}
+// Custom middleware for file upload
+const uploadToMongo = async (req, res, next) => {
+  if (!req.body.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
 
-app.post('/analyze-invoice', upload.single('image'), async (req, res) => {
   try {
-    console.log("hi");
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+    const fileData = Buffer.from(req.body.file.split(',')[1], 'base64');
+    const contentType = req.body.file.split(';')[0].split(':')[1];
+
+    const file = new File({
+      data: fileData,
+      contentType: contentType
+    });
+
+    const savedFile = await file.save();
+    req.fileId = savedFile._id;
+    next();
+  } catch (error) {
+    console.error('Error saving file to MongoDB:', error);
+    res.status(500).json({ error: 'An error occurred while uploading the file' });
+  }
+};
+
+app.post('/analyze-invoice', uploadToMongo, async (req, res) => {
+  try {
+    const file = await File.findById(req.fileId);
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
     }
 
-    const base64Image = await fileToBase64(req.file.path);
-    const mimeType = req.file.mimetype;
+    const base64Image = file.data.toString('base64');
+    const mimeType = file.contentType;
 
-    // Clean up the temporary file
-    await fs.unlink(req.file.path);
+    // Clean up the temporary file from MongoDB
+    await File.findByIdAndDelete(req.fileId);
 
     const chatSession = model.startChat({
       generationConfig,
@@ -143,7 +158,7 @@ app.post('/analyze-invoice', upload.single('image'), async (req, res) => {
                 data: base64Image
               }
             },
-            {text: "fetch customer details,products,total amount from invoice"},
+            { text: "fetch customer details,products,total amount from invoice" },
           ],
         },
       ],
@@ -158,9 +173,6 @@ app.post('/analyze-invoice', upload.single('image'), async (req, res) => {
   }
 });
 
-
-
-
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Example app listening at http://localhost:${port}`);
 });

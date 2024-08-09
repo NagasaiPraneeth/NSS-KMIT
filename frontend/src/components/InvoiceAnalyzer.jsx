@@ -50,14 +50,19 @@ const InvoiceAnalyzer = () => {
     setError(null);
     setAnalysis(null);
     setInvalidPdf(false);
-    const formData = new FormData();
-    formData.append('image', file);
+  
     try {
-      const response = await axios.post('/analyze-invoice', formData, {
+      // Convert file to base64
+      const base64File = await fileToBase64(file);
+  
+      const response = await axios.post('/analyze-invoice', {
+        file: base64File
+      }, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
+  
       const data = JSON.parse(response.data.analysis);
       if (data.invalid_pdf) {
         setInvalidPdf(true);
@@ -70,6 +75,16 @@ const InvoiceAnalyzer = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+  
+  // Helper function to convert File to base64
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
   };
 
   return (
