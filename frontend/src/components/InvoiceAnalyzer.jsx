@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback,useEffect } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import { 
@@ -26,12 +26,48 @@ const DropzoneArea = ({ children, ...props }) => (
   </Box>
 );
 
+const MobileRedirect = () => (
+  <Box
+    sx={{
+      bgcolor: 'black',
+      color: 'white',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
+      padding: 2,
+    }}
+  >
+    <Typography variant="h4" gutterBottom>
+      Please Open on a PC
+    </Typography>
+    <Typography>
+      This content is optimized for desktop viewing. Please visit us on a PC for the best experience.
+    </Typography>
+  </Box>
+);
+
 const InvoiceAnalyzer = () => {
   const [file, setFile] = useState(null);
   const [analysis, setAnalysis] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [invalidPdf, setInvalidPdf] = useState(false);
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(false);
+
+  useEffect(() => {
+    const checkDeviceType = () => {
+      const width = window.innerWidth;
+      setIsMobileOrTablet(width < 1024);
+    };
+
+    checkDeviceType();
+    window.addEventListener('resize', checkDeviceType);
+
+    return () => window.removeEventListener('resize', checkDeviceType);
+  }, []);
 
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
@@ -86,6 +122,10 @@ const InvoiceAnalyzer = () => {
       reader.onerror = (error) => reject(error);
     });
   };
+
+  if (isMobileOrTablet) {
+    return <MobileRedirect />;
+  }
 
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', mt: 4, p: 3 }}>
