@@ -2,11 +2,10 @@
   "name": "new_backend",
   "version": "1.0.0",
   "main": "index.js",
-    "scripts": {
-    "start": "node index.js",
-    "build": "npm install"
-
-    },
+   "scripts": {
+    "start": "cd ../frontend && npm run build && cd ../backend && node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "author": "",
   "license": "ISC",
   "description": "",
