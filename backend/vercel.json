@@ -3,21 +3,10 @@
     "builds": [
         {
             "src": "index.js",
-            "use": "@vercel/node",
-            "config": {
-                "maxLambdaSize": "25mb"
-            }
-        },
-        {
-            "src": "build/**",
-            "use": "@vercel/static"
+            "use": "@vercel/node"
         }
     ],
     "routes": [
-        {
-            "src": "/api/(.*)",
-            "dest": "index.js"
-        },
         {
             "src": "/(.*)",
             "dest": "index.js"
