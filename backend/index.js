@@ -13,7 +13,7 @@ mongoose.connect("mongodb+srv://NSP:hello@cluster0.d298u.mongodb.net/?retryWrite
 
 app.use(cors());
 
-const port = 5173;
+const port = 5001;
 app.use(bodyParser.json({ limit: '100mb' }));
 app.use(express.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
