@@ -35,7 +35,7 @@ const EventPage = () => {
     e.preventDefault();
     newVolunteer.eventid=eventid;
     newVolunteer.duration=eventduration;
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/en/addvolunteer`, newVolunteer);
+    const response = await axios.post(`/en/addvolunteer`, newVolunteer);
     console.log(response.data.data)
     navigate(0)
     
