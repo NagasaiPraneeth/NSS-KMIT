@@ -5,6 +5,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv').config();
+const approute = require('./route');
+app.use('/en', approute);
 
 
 // MongoDB connection
@@ -12,6 +14,7 @@ mongoose.connect("mongodb+srv://NSP:hello@cluster0.d298u.mongodb.net/?retryWrite
 
 
 app.use(cors());
+
 
 const port = 5001;
 app.use(bodyParser.json({ limit: '100mb' }));
