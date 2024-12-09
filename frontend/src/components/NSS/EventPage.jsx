@@ -52,7 +52,7 @@ const EventPage = () => {
   const getEvents = async () => {
     try {
       console.log("hi")
-      const response=await axios.get(`${import.meta.env.VITE_BACKEND_URL}/en/getEvents`);
+      const response=await axios.get(`/en/getEvents`);
       console.log(response.data);
       setEvents(response.data);
     } catch (error) {
@@ -62,7 +62,7 @@ const EventPage = () => {
 
   const getVolunteers = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/en/getVolunteers/${eventid}`);
+      const response = await axios.get(`/en/getVolunteers/${eventid}`);
       console.log(response.data);
       setVolunteers(response.data);
     } catch (error) {

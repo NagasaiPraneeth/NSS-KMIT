@@ -32,8 +32,8 @@ const HomePage = () => {
     e.preventDefault();
     
     try {
-      console.log(`${import.meta.env.VITE_BACKEND_URL}/en/addEvent`);
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/en/addEvent`, formData);
+     // console.log(`${import.meta.env.VITE_BACKEND_URL}/en/addEvent`);
+      const response = await axios.post(`/en/addEvent`, formData);
       console.log(response.data.data)
       navigate(0);
       
