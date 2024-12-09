@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 
 const addEvent = async (req, res) => {
     try {
-        const info = req.body;
+        const {formData}=req.body;
+        const info = formData;
         let newEvent = new event({});
         newEvent = await newEvent.save();
         const id = newEvent._id;
@@ -30,8 +31,11 @@ const addEvent = async (req, res) => {
 }
 const addvolunteer = async (req, res) => {
     try {
+        console.log("hiiii")
         
-        const info = req.body;
+        const {Volunteer}=req.body;
+        console.log(Volunteer)
+        const info = Volunteer
         const result = info.duration.slice(9);
         const finalservice=Number(result)
         let newVolunteer = new volunteer({});
@@ -71,7 +75,7 @@ const addvolunteer = async (req, res) => {
 }
 const getEvents = async (req,res) => {
     const events = await event.find() // TODO: add session oldagehome queryfetch 
-    console.log("ho",events)
+    //console.log("ho",events)
     res.json(events);
 }
 const getVolunteers = async (req, res) => {

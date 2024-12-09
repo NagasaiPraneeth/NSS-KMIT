@@ -7,13 +7,17 @@ import { useNavigate } from 'react-router-dom';
 
 const EventPage = () => {
   const navigate = useNavigate();
+
   const { id, duration } = useParams();
+  
+  console.log("ID:", id);        // Should log "123"
+  console.log("Duration:", duration); // Should log "6"
   const [eventid,setEventId]=useState(id)
   const [eventduration,setDuration]=useState(duration)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [volunteers,setVolunteers]=useState()
   const [event, setEvents] = useState([]);
-  const [newVolunteer, setNewVolunteer] = useState({
+  const [Volunteer, setVolunteer] = useState({
     name: '',
     rollno: '',
     photoUrl: '',
@@ -33,13 +37,13 @@ const EventPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    newVolunteer.eventid=eventid;
-    newVolunteer.duration=eventduration;
-    const response = await axios.post(`/en/addvolunteer`, newVolunteer);
+    Volunteer.eventid=eventid;
+    console.log(Volunteer)
+    const response = await axios.post(`/en/addvolunteer`, {Volunteer:Volunteer});
     console.log(response.data.data)
     navigate(0)
     
-    setNewVolunteer({ name: '', role: '', photoUrl: '' });
+    setVolunteer({ name: '', role: '', photoUrl: '' });
     setIsModalOpen(false);
     
   };
@@ -234,8 +238,8 @@ const EventPage = () => {
                   <label className="block text-sm font-medium mb-1">Name</label>
                   <input
                     type="text"
-                    value={newVolunteer.name}
-                    onChange={(e) => setNewVolunteer({ ...newVolunteer, name: e.target.value })}
+                    value={Volunteer.name}
+                    onChange={(e) => setVolunteer({ ...Volunteer, name: e.target.value })}
                     className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
@@ -244,8 +248,8 @@ const EventPage = () => {
                   <label className="block text-sm font-medium mb-1">Role</label>
                   <input
                     type="text"
-                    value={newVolunteer.role}
-                    onChange={(e) => setNewVolunteer({ ...newVolunteer, role: e.target.value })}
+                    value={Volunteer.role}
+                    onChange={(e) => setVolunteer({ ...Volunteer, role: e.target.value })}
                     className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
@@ -254,8 +258,8 @@ const EventPage = () => {
                   <label className="block text-sm font-medium mb-1">Photo URL (optional)</label>
                   <input
                     type="text"
-                    value={newVolunteer.photoUrl}
-                    onChange={(e) => setNewVolunteer({ ...newVolunteer, photoUrl: e.target.value })}
+                    value={Volunteer.photoUrl}
+                    onChange={(e) => setVolunteer({ ...Volunteer, photoUrl: e.target.value })}
                     className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Leave empty for default avatar"
                   />

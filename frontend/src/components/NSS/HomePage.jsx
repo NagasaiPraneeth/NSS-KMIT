@@ -33,7 +33,7 @@ const HomePage = () => {
     
     try {
      // console.log(`${import.meta.env.VITE_BACKEND_URL}/en/addEvent`);
-      const response = await axios.post(`/en/addEvent`, formData);
+      const response = await axios.post(`/en/addEvent`, {formData:formData});
       console.log(response.data.data)
       navigate(0);
       
@@ -78,7 +78,8 @@ const HomePage = () => {
   // ]);
 
   const handleEventClick = (event) => {
-    navigate(`/Event/${event._id}/duration=${event.duration}`);
+    navigate(`/Event/${event._id}/${event.duration}`);
+
   };
 
   return (
