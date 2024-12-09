@@ -20,7 +20,7 @@ const HomePage = () => {
   const getEvents = async () => {
       try {
         console.log("hi")
-        const response=await axios.get(`${import.meta.env.VITE_BACKEND_URL}/en/getEvents`);
+        const response=await axios.get(`/en/getEvents`);
         console.log(response.data);
         setEvents(response.data);
       } catch (error) {
