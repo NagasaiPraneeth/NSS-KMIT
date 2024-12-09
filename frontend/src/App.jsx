@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import InvoiceAnalyzer from './components/InvoiceAnalyzer';
+import HomePage from './components/NSS/HomePage';
+import EventPage from './components/NSS/EventPage';
+
 
 function App() {
- 
-
- 
+  
 
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<InvoiceAnalyzer />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/Event/:id/:duration" element={<EventPage/>} />      
         </Routes>
       </Router>
     </div>
